@@ -40,20 +40,22 @@ public class ShowServiceImpl implements ShowService {
 
     @Override
     public ShowDTO createShow( Long screenId, Long movieId, ShowDTO showDTO) {
-        boolean showExists =showRepository.findWhereStartTimeOrEndTimeExists(screenId,showDTO.getShowDate(),showDTO.getStartTime(),showDTO.getEndTime());
-        if(showExists){
-            throw new APIException("A show already exists between "+showDTO.getStartTime()+" and "+showDTO.getEndTime()+" on "+showDTO.getShowDate());
-        }
         Show show = modelMapper.map(showDTO,Show.class);
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(()->new ResourceNotFoundException("Movie","movieId",movieId));
+        show.setEndTime(show.getStartTime().plus(movie.getDuration()));
+        boolean showExists =showRepository.findWhereStartTimeOrEndTimeExists(screenId,show.getShowDate(),show.getStartTime(),show.getEndTime());
+        if(showExists){
+            throw new APIException("A show already exists between "+show.getStartTime()+" and "+show.getEndTime()+" on "+show.getShowDate());
+        }
         Screen screen =screenRepository.findById(screenId)
                 .orElseThrow(()->new ResourceNotFoundException("Screen","screenId",screenId));
 
-        List<ShowSeat> showSeatList= createShowSeats(screen,show);
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(()->new ResourceNotFoundException("Movie","movieId",movieId));
-
         show.setScreen(screen);
         show.setMovie(movie);
+
+        List<ShowSeat> showSeatList= createShowSeats(screen,show);
+
         show.setShowSeats(showSeatList);
         Show showFromDB=showRepository.save(show);
         return modelMapper.map(showFromDB,ShowDTO.class);
@@ -145,7 +147,8 @@ public class ShowServiceImpl implements ShowService {
         List<ShowSeat> showSeatList=show.getShowSeats();
         seatingLayout.setShowSeats(showSeatList);
         seatingLayout.setTotalSeats((long)showSeatList.size());
-        Long availableSeats=showSeatRepository.CountByShowShowIdAndSeatStatus(showId,SeatStatus.Unlocked);
+        Long availableSeats=showSeatRepository.countByShowShowIdAndSeatStatus(showId,SeatStatus.Unlocked);
+        seatingLayout.setAvailableSeats(availableSeats);
         return  seatingLayout;
     }
 
@@ -154,14 +157,20 @@ public class ShowServiceImpl implements ShowService {
         Show showFromDB=showRepository.findById(showId)
                 .orElseThrow(()->new ResourceNotFoundException("Show","showId",showId));
 
-        boolean showExists =showRepository.findWhereStartTimeOrEndTimeExistsExceptCurrent(screenId,showId,showDTO.getShowDate(),showDTO.getStartTime(),showDTO.getEndTime());
-        if(showExists){
-            throw new APIException("A show already exists between "+showDTO.getStartTime()+" and "+showDTO.getEndTime()+" on "+showDTO.getShowDate());
-        }
+        Movie movieFromDB=movieRepository.findById(showFromDB.getMovie().getMovieId())
+                .orElseThrow(()->new ResourceNotFoundException("Movie","movieId",showFromDB.getMovie().getMovieId()));
+
         showFromDB.setShowDate(showDTO.getShowDate());
         showFromDB.setStartTime(showDTO.getStartTime());
-        showFromDB.setEndTime(showDTO.getEndTime());
         showFromDB.setBasePrice(showDTO.getBasePrice());
+
+        showFromDB.setEndTime(showFromDB.getStartTime().plus(movieFromDB.getDuration()));
+
+        boolean showExists =showRepository.findWhereStartTimeOrEndTimeExistsExceptCurrent(screenId,showId,showFromDB.getShowDate(),showFromDB.getStartTime(),showFromDB.getEndTime());
+        if(showExists){
+            throw new APIException("A show already exists between "+showFromDB.getStartTime()+" and "+showFromDB.getEndTime()+" on "+showFromDB.getShowDate());
+        }
+
         Show savedShow=showRepository.save(showFromDB);
         return modelMapper.map(savedShow,ShowDTO.class);
     }

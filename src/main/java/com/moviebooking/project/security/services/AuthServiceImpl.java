@@ -1,6 +1,7 @@
 package com.moviebooking.project.security.services;
 
 
+import com.moviebooking.project.exception.APIException;
 import com.moviebooking.project.model.AppRole;
 import com.moviebooking.project.model.Role;
 import com.moviebooking.project.model.User;
@@ -11,6 +12,7 @@ import com.moviebooking.project.security.request.LoginRequest;
 import com.moviebooking.project.security.request.SignupRequest;
 import com.moviebooking.project.security.response.MessageResponse;
 import com.moviebooking.project.security.response.UserInfoResponse;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -74,6 +76,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<?> signup(@RequestBody SignupRequest  signupRequest) {
+        if(signupRequest.getRole().contains(AppRole.ROLE_THEATRE_MANAGER)){
+            throw new APIException("Theatre Manager is not allowed to sign up");
+        }
         if(userRepository.existsByUserName(signupRequest.getUsername())){
             return ResponseEntity.badRequest().body(new MessageResponse("Error:username is already taken"));
         }
@@ -139,5 +144,10 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toList());
         UserInfoResponse loginResponse=new UserInfoResponse(userDetails.getId(), roles,userDetails.getUsername());
         return ResponseEntity.ok().body(loginResponse);
+    }
+
+    @Override
+    public String promoteUser(Long userId, Long adminId) {
+        return "";
     }
 }

@@ -5,6 +5,7 @@ import com.moviebooking.project.Payload.Response.MovieResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -15,5 +16,5 @@ public interface MovieService {
     List<MovieDTO> getMoviesByKeyword(String keyword);
     MovieDTO updateMovie(Long movieId,MovieDTO movieDTO);
     MovieDTO deleteMovie(Long id);
-    MovieDTO updateMovieImage(Long movieId, MultipartFile image);
+    MovieDTO updateMovieImage(Long movieId, MultipartFile image) throws IOException;
 }

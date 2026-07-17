@@ -26,7 +26,7 @@ public class MovieController {
     @Autowired
     MovieService movieService;
 
-    @PostMapping("/movies")
+    @PostMapping("/admin/movies")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MovieDTO> addMovie(@Valid @RequestBody MovieDTO movieDTO) {
         MovieDTO savedMovieDTO=movieService.createMovie(movieDTO);

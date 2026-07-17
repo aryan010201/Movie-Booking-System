@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShowSeatRepository extends JpaRepository<ShowSeat,Long> {
 
-    Long CountByShowShowIdAndSeatStatus(Long showId, SeatStatus seatStatus);
+    Long countByShowShowIdAndSeatStatus(Long showId, SeatStatus seatStatus);
 }

@@ -39,10 +39,11 @@ public class BookingController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/bookings/{bookingId}")
+    @DeleteMapping("/bookings/{bookingId}")
     public ResponseEntity<String> cancelBooking(@PathVariable Long bookingId){
-        String cancelBoooking=bookingService.CancelBooking(bookingId);
-        return ResponseEntity.ok(cancelBoooking);
+        Long userId=authUtil.loggedInUserId();
+        String cancelBooking=bookingService.CancelBooking(bookingId,userId);
+        return ResponseEntity.ok(cancelBooking);
     }
 
 }

@@ -10,4 +10,6 @@ public interface AuthService {
     public ResponseEntity<?> signup(SignupRequest signupRequest);
     public ResponseEntity<?> logout();
     public ResponseEntity<?> getUserDetails(Authentication authentication);
+
+    String promoteUser(Long userId, Long adminId);
 }

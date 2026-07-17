@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Movie {
     @NotBlank
     @Size(min = 3, max = 100)
     private String movieName;
-    private LocalTime duration;
+    private Duration duration;
     private Double basePrice;
     private Double movieRating;
     private String movieDescription;

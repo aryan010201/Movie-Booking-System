@@ -20,6 +20,7 @@ public class ScreenController {
     @Autowired
     ScreenService screenService;
 
+
     @PreAuthorize("hasRole('THEATRE_MANAGER')")
     @PostMapping("/theatres/{theatreId}/screens")
     public ResponseEntity<ScreenDTO> createScreen(@PathVariable Long theatreId, @RequestBody ScreenDTO screenDTO) {

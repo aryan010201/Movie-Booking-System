@@ -2,9 +2,11 @@ package com.moviebooking.project.controller;
 
 
 
+import com.moviebooking.project.security.jwt.JwtUtils;
 import com.moviebooking.project.security.request.LoginRequest;
 import com.moviebooking.project.security.request.SignupRequest;
 import com.moviebooking.project.security.services.AuthService;
+import com.moviebooking.project.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private AuthUtil authUtil;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
@@ -45,11 +50,7 @@ public class AuthController {
         return authService.getUserDetails(authentication);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/promoteUser")
-    public ResponseEntity<?> makeUserTheatreManager(Authentication authentication) {
-        String promoted=authService.promoteUser(userId,adminId);
-    }
+
 
 
 }

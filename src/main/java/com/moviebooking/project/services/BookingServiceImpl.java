@@ -7,7 +7,6 @@ import com.moviebooking.project.model.*;
 import com.moviebooking.project.repository.BookingRepository;
 import com.moviebooking.project.repository.ShowRepository;
 import com.moviebooking.project.repository.ShowSeatRepository;
-import com.moviebooking.project.request.BookingRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +78,13 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public String CancelBooking(Long bookingId) {
+    public String CancelBooking(Long bookingId, Long userId) {
         Booking booking=bookingRepository.findById(bookingId)
                 .orElseThrow(()-> new ResourceNotFoundException("booking","bookingId",bookingId));
+
+        if(booking.getUser().getUserId()!=userId){
+            throw new APIException("You cant cancel this Booking");
+        }
         if (booking.getBookingDate().equals(LocalDate.now())) {
 
             Duration duration = Duration.between(

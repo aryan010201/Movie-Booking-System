@@ -5,6 +5,7 @@ import com.moviebooking.project.Payload.Response.TheatreResponse;
 import com.moviebooking.project.exception.APIException;
 import com.moviebooking.project.exception.ResourceNotFoundException;
 import com.moviebooking.project.model.Theatre;
+import com.moviebooking.project.model.User;
 import com.moviebooking.project.repository.TheatreRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,9 @@ public class TheatreServiceImpl implements TheatreService {
     ModelMapper modelMapper;
 
     @Override
-    public TheatreDTO createTheatre(TheatreDTO theatreDTO) {
+    public TheatreDTO createTheatre(TheatreDTO theatreDTO, User theatreManager) {
         Theatre theatre=modelMapper.map(theatreDTO,Theatre.class);
+        theatre.setManager(theatreManager);
         Theatre savedTheatre=theatreRepository.findWhereTheatreIdCityStateAndCountry(theatre.getTheatreName(),theatre.getCity()
                 ,theatre.getState(),theatre.getCountry());
         if(savedTheatre!=null){
@@ -133,11 +135,15 @@ public class TheatreServiceImpl implements TheatreService {
     }
 
     @Override
-    public TheatreDTO updateTheatre(Long theatreId, TheatreDTO theatreDTO) {
+    public TheatreDTO updateTheatre(Long theatreId, TheatreDTO theatreDTO, Long theatreManagerId) {
 
         Theatre theatreFromDB=theatreRepository.findById(theatreId).orElse(null);
         if(theatreFromDB==null){
             throw new APIException("No theatre found");
+        }
+
+        if(theatreFromDB.getManager().getUserId()!=theatreManagerId){
+            throw new APIException("You cant modify this theatre");
         }
 
         theatreFromDB.setTheatreName(theatreDTO.getTheatreName());
@@ -150,10 +156,13 @@ public class TheatreServiceImpl implements TheatreService {
     }
 
     @Override
-    public TheatreDTO deleteTheatre(Long theatreId) {
+    public TheatreDTO deleteTheatre(Long theatreId, Long theatreManagerId) {
         Theatre theatreFromDB=theatreRepository.findById(theatreId).orElse(null);
         if(theatreFromDB==null){
             throw new APIException("No theatre found");
+        }
+        if(theatreFromDB.getManager().getUserId()!=theatreManagerId){
+            throw new APIException("You cant modify this theatre");
         }
         theatreRepository.deleteById(theatreId);
         return modelMapper.map(theatreFromDB,TheatreDTO.class);

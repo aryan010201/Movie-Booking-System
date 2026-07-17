@@ -14,7 +14,5 @@ public class ShowDTO {
 
     private LocalTime startTime;
 
-    private LocalTime endTime;
-
     private BigDecimal basePrice;
 }
