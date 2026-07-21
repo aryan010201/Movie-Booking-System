@@ -25,7 +25,7 @@ public class TheatreController {
     private AuthUtil authUtil;
 
 
-    @PreAuthorize("hasRole(ROLE_THEATRE_MANAGER)")
+    @PreAuthorize("hasRole('THEATRE_MANAGER')")
     @PostMapping("/theatres")
     public ResponseEntity<TheatreDTO> createTheatre(@RequestBody TheatreDTO theatreDTO) {
         User theatreManager=authUtil.loggedInUser();
@@ -76,7 +76,7 @@ public class TheatreController {
     }
 
 
-    @PreAuthorize("hasRole(ROLE_THEATRE_MANAGER)")
+    @PreAuthorize("hasRole('THEATRE_MANAGER')")
     @PutMapping("/theatres/{theatreId}")
     public ResponseEntity<TheatreDTO> updateTheatre(@PathVariable  Long theatreId, @RequestBody TheatreDTO theatreDTO) {
         Long theatreManagerId=authUtil.loggedInUserId();
@@ -85,7 +85,7 @@ public class TheatreController {
     }
 
 
-    @PreAuthorize("hasRole(ROLE_THEATRE_MANAGER)")
+    @PreAuthorize("hasRole('THEATRE_MANAGER')")
     @DeleteMapping("/theatres/{theatreId}")
     public ResponseEntity<TheatreDTO> deleteTheatre(@PathVariable Long theatreId) {
         Long theatreManagerId=authUtil.loggedInUserId();

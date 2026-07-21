@@ -43,7 +43,7 @@ public class AuthController {
         return authService.logout();
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('USER','THEATRE_MANAGER,ADMIN')")
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(Authentication authentication) {
 

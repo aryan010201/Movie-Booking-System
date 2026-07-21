@@ -40,6 +40,10 @@ public class Show {
     @JoinColumn(name="screenId")
     private Screen screen;
 
-    @OneToMany(mappedBy = "show")
+    @OneToMany(
+            mappedBy = "show",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<ShowSeat> showSeats;
 }

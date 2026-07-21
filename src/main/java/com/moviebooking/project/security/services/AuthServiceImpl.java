@@ -108,11 +108,6 @@ public class AuthServiceImpl implements AuthService {
                                 .orElseThrow(()->new RuntimeException("Error: Role not found"));
                         roles.add(adminRole);
                         break;
-                    case "seller":
-                        Role theatreManagerRole=roleRepository.findByRoleName(AppRole.ROLE_THEATRE_MANAGER)
-                                .orElseThrow(()->new RuntimeException("Error: Role not found"));
-                        roles.add(theatreManagerRole);
-                        break;
                     default:
                         Role userRole=roleRepository.findByRoleName(AppRole.ROLE_USER)
                                 .orElseThrow(()->new RuntimeException("Error: Role not found"));

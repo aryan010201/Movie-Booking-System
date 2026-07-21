@@ -11,7 +11,7 @@ import java.util.List;
 public class Booking{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookingId;
+    Long bookingId;
 
     Double totalPrice;
 

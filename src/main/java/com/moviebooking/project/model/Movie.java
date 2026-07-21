@@ -2,6 +2,7 @@ package com.moviebooking.project.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -23,8 +24,12 @@ public class Movie {
     @NotBlank
     @Size(min = 3, max = 100)
     private String movieName;
+    @NotNull
     private Duration duration;
+
+    @NotNull
     private Double basePrice;
+
     private Double movieRating;
     private String movieDescription;
     private String movieImage;

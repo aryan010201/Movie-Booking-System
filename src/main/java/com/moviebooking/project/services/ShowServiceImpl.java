@@ -66,6 +66,7 @@ public class ShowServiceImpl implements ShowService {
         List<ShowSeat> showSeatList=new ArrayList<>();
         for(Seat seat:seatList){
             ShowSeat showSeat=new ShowSeat(SeatStatus.Unlocked,show,seat);
+            showSeatRepository.save(showSeat);
             showSeatList.add(showSeat);
         }
         return showSeatList;

@@ -20,8 +20,11 @@ public class ShowSeat {
     @Column(nullable = false)
     SeatStatus seatStatus;
 
+    @Version
+    private Long version;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name = "showId")
     private Show show;
 
